@@ -26,11 +26,6 @@ public class DisplayData extends JFrame {
 
 
     public static void main(String[] args) throws IOException {
-        String inputFile = "data/sample_1.csv";
-        DisplayData demo = new DisplayData("", inputFile);
-        demo.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        demo.pack();
-        demo.setLocationRelativeTo(null);
-        demo.setVisible(true);
+        ClusterHelper.displayJFrame(new DisplayData("Display Sample", "data/sample_5.csv"));
     }
 }

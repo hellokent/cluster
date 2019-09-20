@@ -3,6 +3,7 @@ package com.example.cluster;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.util.Strings;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -50,5 +51,12 @@ public final class ClusterHelper {
                     frame.addData(Double.parseDouble(strings[0]), Double.parseDouble(strings[1]));
                 }
             });
+    }
+
+    public static void displayJFrame(JFrame frame) {
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
     }
 }

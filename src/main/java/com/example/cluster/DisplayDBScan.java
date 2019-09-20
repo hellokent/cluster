@@ -6,11 +6,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 
-public class DisplayKMeans extends JFrame {
-    private ScatterFrame frame = new ScatterFrame();
+public class DisplayDBScan extends JFrame {
 
-    public DisplayKMeans(String s, String file) throws IOException {
+    public DisplayDBScan(String s, String file) throws IOException {
         super(s);
+        ScatterFrame frame = new ScatterFrame();
         frame.setCreateData(false);
         ClusterHelper.readData(file, frame);
         frame.setTitle(s);
@@ -20,9 +20,9 @@ public class DisplayKMeans extends JFrame {
 
     public static void main(String[] args) throws IOException {
         String inputFile = "data/sample_5.csv";
-        KMeansCluster cluster = new KMeansCluster(5);
+        DBScanCluster cluster = new DBScanCluster(0.3, 3);
         String outputFile = "data/" + cluster.getClass().getSimpleName() + ".csv";
         ClusterHelper.cluster(cluster, inputFile, outputFile);
-        ClusterHelper.displayJFrame(new DisplayKMeans(cluster.getClass().getSimpleName(), outputFile));
+        ClusterHelper.displayJFrame(new DisplayDBScan(cluster.getClass().getSimpleName(), outputFile));
     }
 }

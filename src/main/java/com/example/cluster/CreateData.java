@@ -61,12 +61,8 @@ public class CreateData extends JFrame {
 
 
     public static void main(String[] args) {
-        String file = "data/sample_3.csv";
         CreateData demo = new CreateData("CreateData");
-        demo.setFile(file);
-        demo.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        demo.pack();
-        demo.setLocationRelativeTo(null);
-        demo.setVisible(true);
+        demo.setFile("data/sample_5.csv");
+        ClusterHelper.displayJFrame(demo);
     }
 }

@@ -6,6 +6,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class KMeansCluster implements ICluster {
@@ -26,19 +27,39 @@ public class KMeansCluster implements ICluster {
         Random random = new Random();
         List<List<Loc>> result = new ArrayList<>();
 
+//        centroidList.add(new Loc(1.0, 0.5));
+//        centroidList.add(new Loc(1.5, 7.5));
+//        centroidList.add(new Loc(8.5, 8.0));
+//        centroidList.add(new Loc(3.5, 4.0));
+//        centroidList.add(new Loc(7.5, 2.5));
         for (int i = 0; i < K; i++) {
-            //centroidList.add(new Loc(random.nextDouble() * 10, random.nextDouble() * 10));
-            //centroidList.add(dataList.get(random.nextInt(dataList.size())));
+//            centroidList.add(new Loc(random.nextDouble() * 10, random.nextDouble() * 10));
+//            centroidList.add(dataList.get(random.nextInt(dataList.size())));
             result.add(new Vector<>());
         }
 
-        centroidList.add(new Loc(1.5, 7.5));
-        centroidList.add(new Loc(8.5, 8.0));
-        centroidList.add(new Loc(1.0, 0.5));
-        centroidList.add(new Loc(3.5, 4.0));
-        centroidList.add(new Loc(7.5, 2.5));
+        List<Loc> tempLocList = new ArrayList<>(dataList);
+        centroidList.add(dataList.get(0));
+        for (int i = 1; i < K; i++) {
+            List<Double> distList = tempLocList.stream()
+                .mapToDouble(loc -> distance.distance(loc, centroidList.stream().min(Comparator.comparingDouble(l -> distance.distance(l, loc))).orElse(dataList.get(0))))
+                .boxed()
+                .collect(Collectors.toList());
+            double sum = distList.stream().mapToDouble(Double::doubleValue).sum();
+            double rand = random.nextDouble() * sum;
 
+            for (int j = 0; j < tempLocList.size(); j++) {
+                rand = rand - distList.get(j);
+                if (rand <= 0) {
+                    centroidList.add(tempLocList.get(j));
+                    break;
+                }
+            }
+        }
+
+        int roundCount = 0;
         do {
+            System.out.println("round:" + roundCount++);
             for (int i = 0; i < K; i++) {
                 result.get(i).clear();
             }
