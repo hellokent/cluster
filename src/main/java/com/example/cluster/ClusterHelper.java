@@ -21,8 +21,9 @@ public final class ClusterHelper {
             .map(line -> line.split(","))
             .map(array -> new Loc(Double.parseDouble(array[0]), Double.parseDouble(array[1])))
             .collect(Collectors.toList());
-
+        long beginTime = System.currentTimeMillis();
         List<List<Loc>> clusterResult = cluster.cluster(dataList);
+        System.out.println("using:" + (System.currentTimeMillis() - beginTime));
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < clusterResult.size(); i++) {
             for (Pair<Double, Double> pair : clusterResult.get(i)) {
