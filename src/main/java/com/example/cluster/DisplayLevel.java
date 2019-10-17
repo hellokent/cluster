@@ -6,10 +6,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 
-public class DisplayKMeans extends JFrame {
-    private ScatterFrame frame = new ScatterFrame();
+public class DisplayLevel extends JFrame {
 
-    public DisplayKMeans(String file) throws IOException {
+    public DisplayLevel(String file) throws IOException {
+        ScatterFrame frame = new ScatterFrame();
         frame.setCreateData(false);
         ClusterHelper.readData(file, frame);
         frame.setTitle(getClass().getSimpleName());
@@ -18,10 +18,10 @@ public class DisplayKMeans extends JFrame {
     }
 
     public static void main(String[] args) throws IOException {
-        String inputFile = "data/sample_2.csv";
-        KMeansCluster cluster = new KMeansCluster(5);
+        String inputFile = "data/sample_4.csv";
+        LevelCluster cluster = new LevelCluster(5);
         String outputFile = "data/" + cluster.getClass().getSimpleName() + ".csv";
         ClusterHelper.cluster(cluster, inputFile, outputFile);
-        ClusterHelper.displayJFrame(new DisplayKMeans(outputFile));
+        ClusterHelper.displayJFrame(new DisplayLevel(outputFile));
     }
 }
