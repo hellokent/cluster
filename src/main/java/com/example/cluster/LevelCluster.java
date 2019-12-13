@@ -4,10 +4,7 @@ import com.google.common.collect.Lists;
 import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.IntStream;
 
 public class LevelCluster implements ICluster {
@@ -26,19 +23,43 @@ public class LevelCluster implements ICluster {
         List<List<Loc>> result = new ArrayList<>(dataList.size());
         dataList.forEach(loc -> result.add(Lists.newArrayList(loc)));
 
-        while (result.size() > K) {
-            IntStream.range(0, result.size())
-                .boxed()
-                .flatMap(i -> IntStream.range(i + 1, result.size())
-                    .boxed()
-                    .map(j -> Pair.of(i, j)))
-                .parallel()
-                .min(Comparator.comparingDouble(pair -> singleDistance(result.get(pair.getLeft()), result.get(pair.getRight()))))
-                .ifPresent(pair -> {
-                    result.get(pair.getLeft()).addAll(result.get(pair.getRight()));
-                    result.remove(pair.getRight().intValue());
-                });
+        double maxDis = 0.5;
+
+        while(true) {
+            int originSize = result.size();
+            for (int i = 0; i < originSize; i++) {
+                List<Loc> locList = result.get(i);
+                if (locList.isEmpty()) {
+                    continue;
+                }
+                IntStream.range(i + 1, originSize)
+                        .parallel()
+                        .mapToObj(result::get)
+                        .filter(list -> !list.isEmpty())
+                        .filter(l -> singleDistance(locList, l) < maxDis)
+                        .peek(locList::addAll)
+                        .forEach(Collection::clear);
+            }
+            result.removeIf(Collection::isEmpty);
+            int newSize = result.size();
+            if (newSize == originSize) {
+                break;
+            }
         }
+
+//        while (result.size() > K) {
+//            IntStream.range(0, result.size())
+//                .boxed()
+//                .flatMap(i -> IntStream.range(i + 1, result.size())
+//                    .boxed()
+//                    .map(j -> Pair.of(i, j)))
+//                .parallel()
+//                .min(Comparator.comparingDouble(pair -> singleDistance(result.get(pair.getLeft()), result.get(pair.getRight()))))
+//                .ifPresent(pair -> {
+//                    result.get(pair.getLeft()).addAll(result.get(pair.getRight()));
+//                    result.remove(pair.getRight().intValue());
+//                });
+//        }
         return result;
     }
 
