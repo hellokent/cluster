@@ -19,7 +19,7 @@ public class DisplayDBScan extends JFrame {
     }
 
     public static void main(String[] args) throws IOException {
-        String inputFile = "data/sample_5.csv";
+        String inputFile = "data/sample_4.csv";
         DBScanCluster cluster = new DBScanCluster(0.3, 3);
         String outputFile = "data/" + cluster.getClass().getSimpleName() + ".csv";
         ClusterHelper.cluster(cluster, inputFile, outputFile);

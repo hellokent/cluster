@@ -1,14 +1,12 @@
 package com.example.cluster;
 
+import com.google.common.base.Strings;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.logging.log4j.util.Strings;
 
 import javax.swing.*;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,7 +15,7 @@ public final class ClusterHelper {
     public static void cluster(ICluster cluster, String dataPath, String clusterDatPath) throws IOException {
         List<Loc> dataList = Files.readAllLines(Paths.get(dataPath))
             .stream()
-            .filter(Strings::isNotBlank)
+            .filter(line -> !Strings.isNullOrEmpty(line))
             .map(line -> line.split(","))
             .map(array -> new Loc(Double.parseDouble(array[0]), Double.parseDouble(array[1])))
             .collect(Collectors.toList());
@@ -27,7 +25,11 @@ public final class ClusterHelper {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < clusterResult.size(); i++) {
             for (Pair<Double, Double> pair : clusterResult.get(i)) {
-                builder.append(i).append(":").append(pair.getLeft()).append(",").append(pair.getRight()).append("\n");
+                if (pair != null) {
+                    builder.append(i).append(":").append(pair.getLeft()).append(",").append(pair.getRight()).append("\n");
+                } else {
+                    System.out.println("null pair:" + i);
+                }
             }
         }
         Files.write(Paths.get(clusterDatPath), builder.toString().getBytes());
@@ -37,7 +39,7 @@ public final class ClusterHelper {
     public static void readData(String file, ScatterFrame frame) throws IOException {
         Files.readAllLines(Paths.get(file))
             .stream()
-            .filter(Strings::isNotBlank)
+            .filter(line -> !Strings.isNullOrEmpty(line))
             .forEach(str -> {
                 String key = null;
                 int index = str.indexOf(":");

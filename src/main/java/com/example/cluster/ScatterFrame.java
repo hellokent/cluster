@@ -10,7 +10,6 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,7 +19,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Random;
 
-public class ScatterFrame{
+public class ScatterFrame {
     @lombok.Setter
     private String title = "Scatter";
 
@@ -47,7 +46,7 @@ public class ScatterFrame{
 
     public ChartPanel createChart() {
         XYSeriesCollection xySeriesCollection = new XYSeriesCollection();
-        for (String key: dataMap.keySet()) {
+        for (String key : dataMap.keySet()) {
             xySeriesCollection.addSeries(dataMap.get(key).getXySeries());
         }
         xySeriesCollection.addSeries(defXYSeries);
@@ -55,6 +54,9 @@ public class ScatterFrame{
             title, "X", "Y", xySeriesCollection,
             PlotOrientation.VERTICAL, false, false, false);
         XYPlot xyPlot = (XYPlot) jfreechart.getPlot();
+        xyPlot.setBackgroundPaint(Color.WHITE);
+        xyPlot.setDomainGridlinePaint(Color.DARK_GRAY);
+        xyPlot.setRangeGridlinePaint(Color.DARK_GRAY);
 
         xyPlot.setDomainCrosshairVisible(true);
         xyPlot.setRangeCrosshairVisible(true);
@@ -70,6 +72,10 @@ public class ScatterFrame{
 
         xyPlot.getRangeAxis().setAutoRange(false);
         xyPlot.getDomainAxis().setAutoRange(false);
+        jfreechart.setElementHinting(true);
+        jfreechart.setAntiAlias(true);
+        jfreechart.setTextAntiAlias(true);
+        jfreechart.setBackgroundPaint(Color.WHITE);
         ChartPanel panel = new ChartPanel(jfreechart);
         panel.setMouseZoomable(false);
 
@@ -82,7 +88,7 @@ public class ScatterFrame{
                     XYPlot plot = (XYPlot) chart.getPlot();
 
                     double x = plot.getDomainAxis().java2DToValue(event.getTrigger().getX(), dataArea, plot.getDomainAxisEdge());
-                    double y = plot.getRangeAxis().java2DToValue(event.getTrigger().getY(),dataArea, plot.getRangeAxisEdge());
+                    double y = plot.getRangeAxis().java2DToValue(event.getTrigger().getY(), dataArea, plot.getRangeAxisEdge());
                     defXYSeries.add(x, y);
                 }
 

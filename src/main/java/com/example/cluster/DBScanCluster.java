@@ -6,6 +6,7 @@ import org.checkerframework.checker.units.qual.K;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Vector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -23,8 +24,9 @@ public class DBScanCluster implements ICluster {
     @Override
     public List<List<Loc>> cluster(List<Loc> dataList) {
         int size = dataList.size();
+        List<List<Loc>> result = new ArrayList<>();
 
-        int k = -1;
+        int k = 0;
         for (int i = 0; i < size; i++) {
             Loc loc = dataList.get(i);
             if (loc.isVisited()) {
@@ -35,29 +37,19 @@ public class DBScanCluster implements ICluster {
                 loc.setVisited(true);
                 loc.setNoise(true);
             } else if (nearLocationList.size() >= minPts) {
-                k++;
                 loc.setVisited(true);
-                loc.setClusterId(k);
-                expandCluster(nearLocationList, k, dataList);
+                int clusterId = k++;
+                loc.setClusterId(clusterId);
+                expandCluster(nearLocationList, clusterId, dataList);
+
+                result.add(new Vector<>());
             }
         }
-        System.out.println("K:" + k);
-        List<List<Loc>> result = new ArrayList<>();
-        for (int i = 0; i <= k + 1; i++) {
-            result.add(new ArrayList<>());
-        }
-        int finalK = k;
-        dataList.stream()
-            .forEach(loc -> {
-                if (loc.isNoise()) {
-                    result.get(finalK + 1).add(loc);
-                } else if (loc.getClusterId() >= 0){
-                    List<Loc> locs = result.get(loc.getClusterId());
-                    //locs.addAll(nearLoc(dataList, loc));
-                    locs.add(loc);
-                }
-            });
-
+        result.add(new Vector<>());
+        int noiseIndex = k;
+        dataList
+            .parallelStream()
+            .forEach(loc -> result.get(loc.isNoise() ? noiseIndex: loc.getClusterId()).add(loc));
 
         return result;
     }

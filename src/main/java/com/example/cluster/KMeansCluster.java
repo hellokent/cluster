@@ -33,7 +33,9 @@ public class KMeansCluster implements ICluster {
 //        centroidList.add(new Loc(3.5, 4.0));
 //        centroidList.add(new Loc(7.5, 2.5));
         for (int i = 0; i < K; i++) {
+//            随机点
 //            centroidList.add(new Loc(random.nextDouble() * 10, random.nextDouble() * 10));
+//            dataList 里面随机选点
 //            centroidList.add(dataList.get(random.nextInt(dataList.size())));
             result.add(new Vector<>());
         }
@@ -46,11 +48,11 @@ public class KMeansCluster implements ICluster {
                 .boxed()
                 .collect(Collectors.toList());
             double sum = distList.stream().mapToDouble(Double::doubleValue).sum();
-            double rand = random.nextDouble() * sum;
+            double r = random.nextDouble() * sum;
 
             for (int j = 0; j < tempLocList.size(); j++) {
-                rand = rand - distList.get(j);
-                if (rand <= 0) {
+                r = r - distList.get(j);
+                if (r <= 0) {
                     centroidList.add(tempLocList.get(j));
                     break;
                 }
